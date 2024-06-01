@@ -98,7 +98,7 @@ const POPCard = (props: Props) => {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Item</DialogTitle>
+            <DialogTitle>Edit POP</DialogTitle>
             <DialogDescription>
               Make changes to POP here. Click save when you're done.
             </DialogDescription>

@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   return (
@@ -66,7 +67,9 @@ const Login = () => {
           </Button>
           <p className="text-sm text-center">
             Don't have an account?
-            <span className="font-semibold"> Register</span>
+            <span className="font-semibold">
+              <Link to={"/register"}> Register</Link>
+            </span>
           </p>
         </CardContent>
       </Card>
