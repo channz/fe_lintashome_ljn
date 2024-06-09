@@ -28,18 +28,53 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
+import {
+  UpdateBulkpopSchema,
+  updateBulkpopSchema,
+} from "@/utils/apis/bulkpop/type";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { editBulkpop } from "@/utils/apis/bulkpop/api";
+import { toast } from "sonner";
+import { CustomFormFieldTextRight } from "./custom-formfield";
+import { Form } from "./ui/form";
+import { useParams } from "react-router-dom";
 
 interface Props {
   pop_name: string;
-  total: number;
-  online: number;
-  offline: number;
+  total: string;
+  online: string;
+  offline: string;
+  onClickDelete: () => void;
 }
 
 const POPCard = (props: Props) => {
-  const { pop_name, total, online, offline } = props;
+  const { pop_name, total, online, offline, onClickDelete } = props;
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const params = useParams();
+
+  const form = useForm<UpdateBulkpopSchema>({
+    resolver: zodResolver(updateBulkpopSchema),
+    defaultValues: {
+      name: "",
+      host: "",
+      user: "",
+      password: "",
+      port: "",
+    },
+  });
+
+  async function onSubmit(data: any) {
+    console.log("babi");
+    try {
+      const result = await editBulkpop(params.bulkpopID!, data);
+
+      toast(result.message);
+    } catch (error) {
+      toast((error as Error).message.toString());
+    }
+  }
 
   const handleEditClick = () => {
     setIsEditDialogOpen(true);
@@ -57,18 +92,28 @@ const POPCard = (props: Props) => {
     setIsDeleteDialogOpen(false);
   };
 
+  const totalNumber = parseInt(total, 10);
+  const offlineNumber = parseInt(offline, 10);
+
+  const bgColor =
+    offlineNumber / totalNumber > 0.5
+      ? "bg-gradient-to-tl from-red-600 to-red-400"
+      : offlineNumber / totalNumber > 0.2
+      ? "bg-gradient-to-tl from-amber-600 to-amber-400"
+      : "bg-gradient-to-tl from-emerald-600 to-emerald-400";
+
   return (
-    <Card className="p-4">
+    <Card className={`p-4 rounded-xl shadow-lg text-white ${bgColor}`}>
       <div className="flex mb-4">
         <div className="flex grow">
-          <p className="font-semibold text-base">{pop_name}</p>
+          <p className="font-bold text-lg me-14 md:me-8">POP {pop_name}</p>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-end mb-auto">
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Ellipsis className="w-4 h-4 my-auto" />
+              <Ellipsis className="w-4 h-4" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align="end" forceMount>
               <DropdownMenuItem onClick={handleEditClick}>
                 <SquarePen className="mr-2 h-4 w-4" />
                 <span>Edit</span>
@@ -82,83 +127,155 @@ const POPCard = (props: Props) => {
         </div>
       </div>
       <div className="flex">
-        <p className="text-xs grow">Total POP </p>
-        <p className="text-xs">{total}</p>
+        <p className="text-sm grow">Total POP </p>
+        <p className="text-sm font-semibold">{total}</p>
       </div>
       <div className="flex">
-        <p className="text-xs grow">Online </p>
-        <p className="text-xs">{online}</p>
+        <p className="text-sm grow">Online </p>
+        <p className="text-sm font-semibold">{online}</p>
       </div>
       <div className="flex">
-        <p className="text-xs grow">Offline </p>
-        <p className="text-xs">{offline}</p>
+        <p className="text-sm grow">Offline </p>
+        <p className="text-sm font-semibold">{offline}</p>
       </div>
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit POP</DialogTitle>
-            <DialogDescription>
-              Make changes to POP here. Click save when you're done.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="pop-name" className="text-right">
-                POP Name
-              </Label>
-              <Input
-                id="pop-name"
-                placeholder="POP Rungkut"
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="host" className="text-right">
-                Host
-              </Label>
-              <Input
-                id="host"
-                placeholder="100.100.100.1"
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="user" className="text-right">
-                User
-              </Label>
-              <Input id="user" placeholder="beatcom" className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="password" className="text-right">
-                Password
-              </Label>
-              <Input
-                id="password"
-                placeholder="beatcom"
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="port" className="text-right">
-                Port
-              </Label>
-              <Input id="port" placeholder="2323" className="col-span-3" />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={closeEditDialog} variant={"outline"}>
-              Cancel
-            </Button>
-            <Button
-              onClick={closeEditDialog}
-              className="bg-green-500 hover:bg-green-400"
-            >
-              Save Changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
+        <Form {...form}>
+          <form action="" onSubmit={form.handleSubmit(onSubmit)}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit POP</DialogTitle>
+                <DialogDescription>
+                  Make changes to POP here. Click save when you're done.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid grid-cols-4 space-y-2 space-x-4 py-2">
+                <div className="grid items-center">
+                  <Label htmlFor="pop-name" className="text-right">
+                    POP Name
+                  </Label>
+                </div>
+                <div className="grid col-span-3">
+                  <CustomFormFieldTextRight
+                    control={form.control}
+                    name="name"
+                    label="POP Name"
+                  >
+                    {(field) => (
+                      <Input
+                        {...field}
+                        placeholder="POP Rungkut"
+                        disabled={form.formState.isSubmitting}
+                        aria-disabled={form.formState.isSubmitting}
+                        value={field.value as string}
+                      />
+                    )}
+                  </CustomFormFieldTextRight>
+                </div>
+                <div className="grid items-center">
+                  <Label htmlFor="host" className="text-right">
+                    Host
+                  </Label>
+                </div>
+                <div className="grid col-span-3">
+                  <CustomFormFieldTextRight
+                    control={form.control}
+                    name="host"
+                    label="Host"
+                  >
+                    {(field) => (
+                      <Input
+                        {...field}
+                        placeholder="100.100.100.1"
+                        disabled={form.formState.isSubmitting}
+                        aria-disabled={form.formState.isSubmitting}
+                        value={field.value as string}
+                      />
+                    )}
+                  </CustomFormFieldTextRight>
+                </div>
+                <div className="grid items-center">
+                  <Label htmlFor="user" className="text-right">
+                    User
+                  </Label>
+                </div>
+                <div className="grid col-span-3">
+                  <CustomFormFieldTextRight
+                    control={form.control}
+                    name="user"
+                    label="User"
+                  >
+                    {(field) => (
+                      <Input
+                        {...field}
+                        placeholder="beatcom"
+                        disabled={form.formState.isSubmitting}
+                        aria-disabled={form.formState.isSubmitting}
+                        value={field.value as string}
+                      />
+                    )}
+                  </CustomFormFieldTextRight>
+                </div>
+                <div className="grid items-center">
+                  <Label htmlFor="password" className="text-right">
+                    Password
+                  </Label>
+                </div>
+                <div className="grid col-span-3">
+                  <CustomFormFieldTextRight
+                    control={form.control}
+                    name="password"
+                    label="Password"
+                  >
+                    {(field) => (
+                      <Input
+                        {...field}
+                        placeholder="beatcom"
+                        disabled={form.formState.isSubmitting}
+                        aria-disabled={form.formState.isSubmitting}
+                        value={field.value as string}
+                      />
+                    )}
+                  </CustomFormFieldTextRight>
+                </div>
+                <div className="grid items-center">
+                  <Label htmlFor="port" className="text-right">
+                    Port
+                  </Label>
+                </div>
+                <div className="grid col-span-3">
+                  <CustomFormFieldTextRight
+                    control={form.control}
+                    name="port"
+                    label="Port"
+                  >
+                    {(field) => (
+                      <Input
+                        {...field}
+                        placeholder="2323"
+                        disabled={form.formState.isSubmitting}
+                        aria-disabled={form.formState.isSubmitting}
+                        value={field.value as string}
+                      />
+                    )}
+                  </CustomFormFieldTextRight>
+                </div>
+              </div>
+              <DialogFooter className="gap-2">
+                <Button onClick={closeEditDialog} variant={"outline"}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-green-500 hover:bg-green-400"
+                >
+                  Save Changes
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </form>
+        </Form>
       </Dialog>
 
       {/* Delete AlertDialog */}
@@ -169,17 +286,17 @@ const POPCard = (props: Props) => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogDescription className="text-xs md:text-base">
               This action cannot be undone. This will permanently delete your
               POP and remove your data from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="gap-2">
             <AlertDialogCancel onClick={closeDeleteDialog}>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={closeDeleteDialog}
+              onClick={onClickDelete}
               className="bg-red-500 hover:bg-red-400"
             >
               Delete

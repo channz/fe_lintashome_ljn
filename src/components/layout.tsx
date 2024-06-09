@@ -13,7 +13,7 @@ function Layout(props: Props) {
 
   return (
     <div className="w-full h-dvh overflow-auto flex flex-col">
-      <nav className="sticky top-0">
+      <nav className="sticky top-0 z-999 bg-white">
         <NavBar />
       </nav>
       <div

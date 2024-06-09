@@ -6,116 +6,72 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getDetailTable } from "@/utils/apis/table/api";
+import { DetailTable } from "@/utils/apis/table/type";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Badge } from "./ui/badge";
 
 const DataTable = () => {
-  const database = [
-    {
-      key: 1,
-      pop_id: 1,
-      user: "PPP - Budi",
-      pop_name: "POP 1",
-      status: "inactive",
-      time: "15.00",
-      downtime: "14.30",
-      count: "1",
-    },
-    {
-      key: 2,
-      pop_id: 2,
-      user: "PPP - Budi",
-      pop_name: "POP 2",
-      status: "inactive",
-      time: "15.00",
-      downtime: "14.30",
-      count: "1",
-    },
-    {
-      key: 3,
-      pop_id: 3,
-      user: "PPP - Budi",
-      pop_name: "POP 3",
-      status: "inactive",
-      time: "15.00",
-      downtime: "14.30",
-      count: "1",
-    },
-    {
-      key: 4,
-      pop_id: 4,
-      user: "PPP - Budi",
-      pop_name: "POP 4",
-      status: "inactive",
-      time: "15.00",
-      downtime: "14.30",
-      count: "1",
-    },
-    {
-      key: 5,
-      pop_id: 5,
-      user: "PPP - Budi",
-      pop_name: "POP 5",
-      status: "inactive",
-      time: "15.00",
-      downtime: "14.30",
-      count: "1",
-    },
-    {
-      key: 6,
-      pop_id: 6,
-      user: "PPP - Budi",
-      pop_name: "POP 6",
-      status: "inactive",
-      time: "15.00",
-      downtime: "14.30",
-      count: "1",
-    },
-    {
-      key: 7,
-      pop_id: 7,
-      user: "PPP - Budi",
-      pop_name: "POP 6",
-      status: "inactive",
-      time: "15.00",
-      downtime: "14.30",
-      count: "1",
-    },
-    {
-      key: 8,
-      pop_id: 8,
-      user: "PPP - Budi",
-      pop_name: "POP 8",
-      status: "inactive",
-      time: "15.00",
-      downtime: "14.30",
-      count: "1",
-    },
-  ];
+  const [data, setData] = useState<DetailTable[]>([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    console.log("babi");
+    try {
+      const result = await getDetailTable();
+      console.log("babi2");
+      console.log(result.data);
+
+      setData(result.data);
+    } catch (error) {
+      console.log("babi3");
+
+      toast((error as Error).message.toString());
+    }
+  }
 
   return (
     <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">No</TableHead>
-          <TableHead>User</TableHead>
-          <TableHead>POP Name</TableHead>
-          <TableHead className="">Status</TableHead>
-          <TableHead className="">Time</TableHead>
-          <TableHead className="">Downtime</TableHead>
-          <TableHead className="">Count</TableHead>
+      <TableHeader className="bg-slate-50">
+        <TableRow className="hover:bg-slate-50">
+          <TableHead className="w-[100px] text-black">No</TableHead>
+          <TableHead className="text-black">User</TableHead>
+          <TableHead className="text-black">POP Name</TableHead>
+          <TableHead className="text-center text-black">Status</TableHead>
+          <TableHead className="text-center text-black">Time</TableHead>
+          <TableHead className="text-center text-black">Downtime</TableHead>
+          <TableHead className="text-center text-black">Count</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {database.map((databases) => (
+        {data.length > 0 ? (
+          data.map((datas) => (
+            <TableRow className="hover:bg-blue-50">
+              <TableCell className="font-medium ">{datas.id}</TableCell>
+              <TableCell>{datas.user}</TableCell>
+              <TableCell className="font-medium">{datas.pop}</TableCell>
+              <TableCell className="text-center">
+                <Badge className="bg-red-100 hover:bg-red-200 text-red-500 hover:text-red-600 text-xs font-medium rounded-lg gap-1 md:ps-2 md:pe-3 md:py-1">
+                  <span className="hidden md:block">•</span>
+                  {datas.status}
+                </Badge>
+              </TableCell>
+              <TableCell className="text-center">{datas.time}</TableCell>
+              <TableCell className="text-center">{datas.downtime}</TableCell>
+              <TableCell className="text-center">{datas.count}</TableCell>
+            </TableRow>
+          ))
+        ) : (
           <TableRow>
-            <TableCell className="font-medium">{databases.pop_id}</TableCell>
-            <TableCell>{databases.user}</TableCell>
-            <TableCell>{databases.pop_name}</TableCell>
-            <TableCell className="">{databases.status}</TableCell>
-            <TableCell className="">{databases.time}</TableCell>
-            <TableCell className="">{databases.downtime}</TableCell>
-            <TableCell className="">{databases.count}</TableCell>
+            <TableCell colSpan={7} className="text-center text-gray-500 py-4">
+              No inactive POP cards available.
+            </TableCell>
           </TableRow>
-        ))}
+        )}
       </TableBody>
     </Table>
   );

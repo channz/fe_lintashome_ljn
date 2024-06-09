@@ -7,10 +7,45 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { RegisterSchema, registerSchema } from "@/utils/apis/user/type";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerAuth } from "@/utils/apis/user/api";
+import { toast } from "sonner";
+import { Form } from "@/components/ui/form";
+import { CustomFormField } from "@/components/custom-formfield";
+import { EyeOff, Eye } from "lucide-react";
+import { useState } from "react";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const form = useForm<RegisterSchema>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  async function onSubmit(data: RegisterSchema) {
+    try {
+      const result = await registerAuth(data);
+
+      toast(result.message);
+      navigate("/login");
+    } catch (error) {
+      toast((error as Error).message.toString());
+    }
+  }
+
   return (
     <div className="relative min-h-screen max-w-full h-screen overflow-auto container flex">
       <div className="absolute inset-x-0 bottom-0 z-0">
@@ -37,41 +72,93 @@ const Register = () => {
           ></path>
         </svg>
       </div>
-      <Card className="z-10 w-1/3 mx-auto my-auto px-8 py-14 flex-wrap flex-col rounded-3xl shadow-lg">
-        <CardHeader className="text-center mb-4">
-          <img
-            className="h-16 -mt-8 mx-auto"
-            src="/src/assets/logo-lintashomebyljn.png"
-            alt=""
-          />
-          <CardTitle className="text-dark text-2xl font-semibold">
-            Create account
-          </CardTitle>
-          <CardDescription className="text-dark">
-            Please register to signing up
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4 text-dark">
-          <Label>Name</Label>
-          <Input placeholder="John Doe" className="rounded-xl" />
-          <Label>Email</Label>
-          <Input
-            type="email"
-            placeholder="johndoe@mail.com"
-            className="rounded-xl"
-          />
-          <Label>Password</Label>
-          <Input type="password" placeholder="******" className="rounded-xl" />
-          <Button className="bg-yellow-300 text-dark rounded-xl font-semibold hover:bg-yellow-200 transition duration-300 ease-in-out">
-            Sign Up
-          </Button>
-          <p className="text-sm text-center">
-            Already have an account?
-            <span className="font-semibold">
-              <Link to={"/login"}> Sign In</Link>
-            </span>
-          </p>
-        </CardContent>
+      <Card className="z-10 mx-auto my-auto flex-wrap flex-col rounded-3xl shadow-lg py-8 w-11/12 md:w-1/2 md:py-14 md:px-4 xl:w-1/3 xl:px-8">
+        <Form {...form}>
+          <form action="" onSubmit={form.handleSubmit(onSubmit)}>
+            <CardHeader className="text-center mb-0 md:mb-4">
+              <img
+                className="h-10 w-auto md:h-14 md:-mt-8 xl:h-16 mx-auto"
+                src="/src/assets/logo-lintashomebyljn.png"
+                alt=""
+              />
+              <CardTitle className="text-dark text-base md:text-2xl font-semibold">
+                Create account
+              </CardTitle>
+              <CardDescription className="text-dark text-xs md:text-sm xl:text-base">
+                Please register to signing up
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4 text-dark">
+              <CustomFormField control={form.control} name="name" label="Name">
+                {(field) => (
+                  <Input
+                    {...field}
+                    className="rounded-xl"
+                    placeholder="John Doe"
+                    disabled={form.formState.isSubmitting}
+                    aria-disabled={form.formState.isSubmitting}
+                    value={field.value as string}
+                  />
+                )}
+              </CustomFormField>
+              <CustomFormField
+                control={form.control}
+                name="email"
+                label="Email"
+              >
+                {(field) => (
+                  <Input
+                    {...field}
+                    className="rounded-xl"
+                    type="email"
+                    placeholder="johndoe@mail.com"
+                    disabled={form.formState.isSubmitting}
+                    aria-disabled={form.formState.isSubmitting}
+                    value={field.value as string}
+                  />
+                )}
+              </CustomFormField>
+              <CustomFormField
+                control={form.control}
+                name="password"
+                label="Password"
+              >
+                {(field) => (
+                  <div className="relative">
+                    <Input
+                      {...field}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="******"
+                      disabled={form.formState.isSubmitting}
+                      aria-disabled={form.formState.isSubmitting}
+                      value={field.value as string}
+                      className="relative"
+                    />
+                    <span
+                      onClick={toggleShowPassword}
+                      className="absolute cursor-pointer px-2 pt-3 top-0 right-0"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-5 h-5 text-sky-500" />
+                      ) : (
+                        <Eye className="w-5 h-5" />
+                      )}
+                    </span>
+                  </div>
+                )}
+              </CustomFormField>
+              <Button className="bg-yellow-300 text-dark rounded-xl font-semibold hover:bg-yellow-200 transition duration-300 ease-in-out">
+                Sign Up
+              </Button>
+              <p className="text-xs md:text-sm text-center">
+                Already have an account?
+                <span className="font-semibold">
+                  <Link to={"/login"}> Sign In</Link>
+                </span>
+              </p>
+            </CardContent>
+          </form>
+        </Form>
       </Card>
     </div>
   );
