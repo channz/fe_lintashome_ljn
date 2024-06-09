@@ -47,6 +47,14 @@ const Homepage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const refresh = setInterval(() => {
+      fetchData();
+    }, 10000);
+
+    return () => clearInterval(refresh);
+  }, []);
+
   const formattedDate: string = format(currentDate, "HH:mm:ss, dd MMMM yyyy");
 
   const form = useForm<AddBulkpopSchema>({
@@ -71,12 +79,11 @@ const Homepage = () => {
   }
 
   async function onSubmit(data: AddBulkpopSchema) {
-    console.log("babi");
-    console.log(data);
     try {
       const result = await createBulkpop(data);
 
       toast(result.message);
+      setIsAddDialogOpen(false);
     } catch (error) {
       toast((error as Error).message.toString());
     }
@@ -128,6 +135,7 @@ const Homepage = () => {
             {datas.map((bulkpop) => (
               <POPCard
                 key={bulkpop.id}
+                id={bulkpop.id}
                 pop_name={bulkpop.name}
                 total={bulkpop.total}
                 online={bulkpop.online}
@@ -257,6 +265,7 @@ const Homepage = () => {
                 </Button>
                 <Button
                   type="submit"
+                  onClick={closeAddDialog}
                   className="bg-green-500 hover:bg-green-400"
                 >
                   Save Changes

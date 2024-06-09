@@ -19,50 +19,63 @@ const DataTable = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const refresh = setInterval(() => {
+      fetchData();
+    }, 10000);
+
+    return () => clearInterval(refresh);
+  }, []);
+
   async function fetchData() {
-    console.log("babi");
     try {
       const result = await getDetailTable();
-      console.log("babi2");
-      console.log(result.data);
 
       setData(result.data);
     } catch (error) {
-      console.log("babi3");
-
       toast((error as Error).message.toString());
     }
   }
 
   return (
-    <Table>
-      <TableHeader className="bg-slate-50">
-        <TableRow className="hover:bg-slate-50">
-          <TableHead className="w-[100px] text-black">No</TableHead>
-          <TableHead className="text-black">User</TableHead>
-          <TableHead className="text-black">POP Name</TableHead>
-          <TableHead className="text-center text-black">Status</TableHead>
-          <TableHead className="text-center text-black">Time</TableHead>
-          <TableHead className="text-center text-black">Downtime</TableHead>
-          <TableHead className="text-center text-black">Count</TableHead>
+    <Table className="min-w-full divide-y divide-gray-200 p-1">
+      <TableHeader className="bg-slate-50 p-1">
+        <TableRow className="p-1 hover:bg-slate-50">
+          <TableHead className="w-[50px] text-black p-1">No</TableHead>
+          <TableHead className="text-black p-1">User</TableHead>
+          <TableHead className="text-black p-1">POP Name</TableHead>
+          <TableHead className="text-center text-black p-1">Status</TableHead>
+          <TableHead className="text-center text-black p-1">Time</TableHead>
+          <TableHead className="text-center text-black p-1">Downtime</TableHead>
+          <TableHead className="text-center text-black p-1">Count</TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody>
+      <TableBody className="p-1">
         {data.length > 0 ? (
-          data.map((datas) => (
-            <TableRow className="hover:bg-blue-50">
-              <TableCell className="font-medium ">{datas.id}</TableCell>
-              <TableCell>{datas.user}</TableCell>
-              <TableCell className="font-medium">{datas.pop}</TableCell>
-              <TableCell className="text-center">
-                <Badge className="bg-red-100 hover:bg-red-200 text-red-500 hover:text-red-600 text-xs font-medium rounded-lg gap-1 md:ps-2 md:pe-3 md:py-1">
+          data.map((datas, index) => (
+            <TableRow key={datas.id} className="hover:bg-blue-50 p-1">
+              <TableCell className="font-medium text-xs p-1">
+                {index + 1}
+              </TableCell>
+              <TableCell className="text-xs p-1">{datas.user}</TableCell>
+              <TableCell className="font-medium text-xs p-1">
+                {datas.pop}
+              </TableCell>
+              <TableCell className="text-center text-xs p-1">
+                <Badge className="bg-red-100 hover:bg-red-200 text-red-500 hover:text-red-600 text-xs font-medium rounded-lg gap-1 md:ps-1 md:pe-2 md:py-1">
                   <span className="hidden md:block">•</span>
                   {datas.status}
                 </Badge>
               </TableCell>
-              <TableCell className="text-center">{datas.time}</TableCell>
-              <TableCell className="text-center">{datas.downtime}</TableCell>
-              <TableCell className="text-center">{datas.count}</TableCell>
+              <TableCell className="text-center text-xs p-1">
+                {datas.time}
+              </TableCell>
+              <TableCell className="text-center text-xs p-1">
+                {datas.downtime}
+              </TableCell>
+              <TableCell className="text-center text-xs p-1">
+                {datas.count}
+              </TableCell>
             </TableRow>
           ))
         ) : (

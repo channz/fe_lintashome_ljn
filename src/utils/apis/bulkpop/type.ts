@@ -9,7 +9,6 @@ export const addBulkpopSchema = z.object({
 });
 
 export const updateBulkpopSchema = z.object({
-  // id: z.string().min(1, { message: "Name is required" }),
   name: z.string().min(1, { message: "Name is required" }),
   host: z.string().min(1, { message: "Host is required" }),
   user: z.string().min(1, { message: "User is required" }),

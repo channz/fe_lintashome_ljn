@@ -24,7 +24,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "./ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
@@ -34,13 +34,15 @@ import {
 } from "@/utils/apis/bulkpop/type";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { editBulkpop } from "@/utils/apis/bulkpop/api";
+import { editBulkpop, getBulkpop } from "@/utils/apis/bulkpop/api";
 import { toast } from "sonner";
 import { CustomFormFieldTextRight } from "./custom-formfield";
 import { Form } from "./ui/form";
-import { useParams } from "react-router-dom";
+import useBulkpopStore from "@/utils/stores/bulkpop";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
+  id: string;
   pop_name: string;
   total: string;
   online: string;
@@ -49,28 +51,48 @@ interface Props {
 }
 
 const POPCard = (props: Props) => {
-  const { pop_name, total, online, offline, onClickDelete } = props;
+  const { id, pop_name, total, online, offline, onClickDelete } = props;
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const params = useParams();
+  const { editDatas, setEditDatas } = useBulkpopStore();
+  const navigate = useNavigate();
 
   const form = useForm<UpdateBulkpopSchema>({
     resolver: zodResolver(updateBulkpopSchema),
     defaultValues: {
-      name: "",
-      host: "",
-      user: "",
-      password: "",
-      port: "",
+      name: editDatas ? editDatas.name : "",
+      host: editDatas ? editDatas.host : "",
+      user: editDatas ? editDatas.user : "",
+      password: editDatas ? editDatas.password : "",
+      port: editDatas ? editDatas.port : "",
     },
   });
 
-  async function onSubmit(data: any) {
-    console.log("babi");
+  useEffect(() => {
+    fetchData();
+  }, [form.formState.isSubmitSuccessful]);
+
+  async function fetchData() {
     try {
-      const result = await editBulkpop(params.bulkpopID!, data);
+      const result = await getBulkpop();
+      const filteredData = result.data.filter((elemen) => elemen.id == id);
+      setEditDatas(filteredData[0]);
+      form.setValue("name", filteredData[0].name);
+      form.setValue("host", filteredData[0].host);
+      form.setValue("user", filteredData[0].user);
+      form.setValue("password", filteredData[0].password);
+      form.setValue("port", filteredData[0].port);
+    } catch (error) {
+      toast((error as Error).message.toString());
+    }
+  }
+
+  async function onSubmit(data: UpdateBulkpopSchema) {
+    try {
+      const result = await editBulkpop(id, data);
 
       toast(result.message);
+      setIsEditDialogOpen(false);
     } catch (error) {
       toast((error as Error).message.toString());
     }
@@ -126,24 +148,30 @@ const POPCard = (props: Props) => {
           </DropdownMenu>
         </div>
       </div>
-      <div className="flex">
-        <p className="text-sm grow">Total POP </p>
-        <p className="text-sm font-semibold">{total}</p>
-      </div>
-      <div className="flex">
-        <p className="text-sm grow">Online </p>
-        <p className="text-sm font-semibold">{online}</p>
-      </div>
-      <div className="flex">
-        <p className="text-sm grow">Offline </p>
-        <p className="text-sm font-semibold">{offline}</p>
+      <div className="flex flex-col mt-auto">
+        <div className="flex">
+          <p className="text-sm grow">Total POP </p>
+          <p className="text-sm font-semibold">{total}</p>
+        </div>
+        <div className="flex">
+          <p className="text-sm grow">Online </p>
+          <p className="text-sm font-semibold">{online}</p>
+        </div>
+        <div className="flex">
+          <p className="text-sm grow">Offline </p>
+          <p className="text-sm font-semibold">{offline}</p>
+        </div>
       </div>
 
       {/* Edit Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <Form {...form}>
-          <form action="" onSubmit={form.handleSubmit(onSubmit)}>
-            <DialogContent>
+      <Dialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        key={editDatas?.id}
+      >
+        <DialogContent>
+          <Form {...form}>
+            <form action="" onSubmit={form.handleSubmit(onSubmit)}>
               <DialogHeader>
                 <DialogTitle>Edit POP</DialogTitle>
                 <DialogDescription>
@@ -273,9 +301,9 @@ const POPCard = (props: Props) => {
                   Save Changes
                 </Button>
               </DialogFooter>
-            </DialogContent>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </DialogContent>
       </Dialog>
 
       {/* Delete AlertDialog */}
