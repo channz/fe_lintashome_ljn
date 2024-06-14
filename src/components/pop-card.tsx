@@ -39,8 +39,6 @@ import { toast } from "sonner";
 import { CustomFormFieldTextRight } from "./custom-formfield";
 import { Form } from "./ui/form";
 import useBulkpopStore from "@/utils/stores/bulkpop";
-import { useNavigate } from "react-router-dom";
-
 interface Props {
   id: string;
   pop_name: string;
@@ -55,7 +53,6 @@ const POPCard = (props: Props) => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { editDatas, setEditDatas } = useBulkpopStore();
-  const navigate = useNavigate();
 
   const form = useForm<UpdateBulkpopSchema>({
     resolver: zodResolver(updateBulkpopSchema),

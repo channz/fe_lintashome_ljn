@@ -14,16 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 interface Props<T extends FieldValues> {
   name: FieldPath<T>;
   label: string;
@@ -70,43 +60,6 @@ export function CustomFormFieldTextRight<T extends FieldValues>(
       render={({ field }) => (
         <FormItem>
           <FormControl>{children(field)}</FormControl>
-          {description && <FormDescription>{description}</FormDescription>}
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-}
-
-export function CustomFormSelect<T extends FieldValues>(
-  props: Readonly<Props<T>>
-) {
-  const { name, label, placeholder, description, control, options } = props;
-
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder={placeholder} />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>{label}</SelectLabel>
-                {options?.map((option) => (
-                  <SelectItem value={option} key={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
         </FormItem>

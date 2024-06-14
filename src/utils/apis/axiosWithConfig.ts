@@ -1,7 +1,5 @@
 import axios from "axios";
 
-// const { URL } = process.env;
-
 let bearerToken = "";
 const axiosWithConfig = axios.create();
 
