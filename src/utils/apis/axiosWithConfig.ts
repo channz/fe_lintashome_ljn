@@ -8,7 +8,7 @@ export const setAxiosConfig = (token: string) => {
 };
 
 axiosWithConfig.interceptors.request.use((axiosConfig) => {
-  axiosConfig.baseURL = "http://103.155.198.246:3310";
+  axiosConfig.baseURL = "https://be_monitoring.lintashome.com/";
   if (bearerToken) {
     axiosConfig.headers.Authorization = `Bearer ${bearerToken}`;
   }
