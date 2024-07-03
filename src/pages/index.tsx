@@ -30,10 +30,12 @@ import { toast } from "sonner";
 import { Form } from "@/components/ui/form";
 import { CustomFormFieldTextRight } from "@/components/custom-formfield";
 import { format } from "date-fns";
+import { useSelectedPopIdStore } from "@/utils/stores/selectedPop";
 
 const Homepage = () => {
   const [datas, setDatas] = useState<Bulkpop[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const { selectedPopId, addPopId, removedPopId } = useSelectedPopIdStore();
 
   useEffect(() => {
     fetchData();
@@ -54,6 +56,14 @@ const Homepage = () => {
 
     return () => clearInterval(refresh);
   }, []);
+
+  const handleCardClick = (id: string) => {
+    if (selectedPopId.includes(id)) {
+      removedPopId(id);
+    } else {
+      addPopId(id);
+    }
+  };
 
   const formattedDate: string = format(currentDate, "HH:mm:ss, dd MMMM yyyy");
 
@@ -141,6 +151,7 @@ const Homepage = () => {
                 online={bulkpop.online}
                 offline={bulkpop.offline}
                 onClickDelete={() => handleDelete(bulkpop.id)}
+                onClickPopCard={() => handleCardClick(bulkpop.id)}
               />
             ))}
           </div>
@@ -190,7 +201,7 @@ const Homepage = () => {
                     {(field) => (
                       <Input
                         {...field}
-                        placeholder="1.1.1.1"
+                        placeholder="10.10.10.1"
                         disabled={form.formState.isSubmitting}
                         aria-disabled={form.formState.isSubmitting}
                         value={field.value as string}
@@ -210,7 +221,7 @@ const Homepage = () => {
                     {(field) => (
                       <Input
                         {...field}
-                        placeholder="user name"
+                        placeholder="Username"
                         disabled={form.formState.isSubmitting}
                         aria-disabled={form.formState.isSubmitting}
                         value={field.value as string}
@@ -230,7 +241,7 @@ const Homepage = () => {
                     {(field) => (
                       <Input
                         {...field}
-                        placeholder="****"
+                        placeholder="*****"
                         disabled={form.formState.isSubmitting}
                         aria-disabled={form.formState.isSubmitting}
                         value={field.value as string}
@@ -250,7 +261,7 @@ const Homepage = () => {
                     {(field) => (
                       <Input
                         {...field}
-                        placeholder="3300"
+                        placeholder="2345"
                         disabled={form.formState.isSubmitting}
                         aria-disabled={form.formState.isSubmitting}
                         value={field.value as string}

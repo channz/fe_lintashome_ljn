@@ -11,13 +11,15 @@ import { DetailTable } from "@/utils/apis/table/type";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "./ui/badge";
+import { useSelectedPopIdStore } from "@/utils/stores/selectedPop";
 
 const DataTable = () => {
   const [data, setData] = useState<DetailTable[]>([]);
+  const { selectedPopId } = useSelectedPopIdStore();
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [selectedPopId]);
 
   useEffect(() => {
     const refresh = setInterval(() => {
@@ -30,8 +32,10 @@ const DataTable = () => {
   async function fetchData() {
     try {
       const result = await getDetailTable();
-
-      setData(result.data);
+      const filteredData = selectedPopId.length
+        ? result.data.filter((item) => selectedPopId.includes(item.pop_id))
+        : result.data;
+      setData(filteredData);
     } catch (error) {
       toast((error as Error).message.toString());
     }

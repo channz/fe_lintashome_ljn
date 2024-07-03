@@ -39,6 +39,7 @@ import { toast } from "sonner";
 import { CustomFormFieldTextRight } from "./custom-formfield";
 import { Form } from "./ui/form";
 import useBulkpopStore from "@/utils/stores/bulkpop";
+import { useSelectedPopIdStore } from "@/utils/stores/selectedPop";
 interface Props {
   id: string;
   pop_name: string;
@@ -46,13 +47,24 @@ interface Props {
   online: string;
   offline: string;
   onClickDelete: () => void;
+  onClickPopCard: () => void;
 }
 
 const POPCard = (props: Props) => {
-  const { id, pop_name, total, online, offline, onClickDelete } = props;
+  const {
+    id,
+    pop_name,
+    total,
+    online,
+    offline,
+    onClickDelete,
+    onClickPopCard,
+  } = props;
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { editDatas, setEditDatas } = useBulkpopStore();
+  const { selectedPopId } = useSelectedPopIdStore();
+  const [isSelected, setIsSelected] = useState(false);
 
   const form = useForm<UpdateBulkpopSchema>({
     resolver: zodResolver(updateBulkpopSchema),
@@ -69,16 +81,15 @@ const POPCard = (props: Props) => {
     fetchData();
   }, [form.formState.isSubmitSuccessful]);
 
+  useEffect(() => {
+    setIsSelected(selectedPopId.includes(id));
+  }, [selectedPopId, id]);
+
   async function fetchData() {
     try {
       const result = await getBulkpop();
       const filteredData = result.data.filter((elemen) => elemen.id == id);
       setEditDatas(filteredData[0]);
-      form.setValue("name", filteredData[0].name);
-      form.setValue("host", filteredData[0].host);
-      form.setValue("user", filteredData[0].user);
-      form.setValue("password", filteredData[0].password);
-      form.setValue("port", filteredData[0].port);
     } catch (error) {
       toast((error as Error).message.toString());
     }
@@ -122,10 +133,15 @@ const POPCard = (props: Props) => {
       : "bg-gradient-to-tl from-emerald-600 to-emerald-400";
 
   return (
-    <Card className={`p-4 rounded-xl shadow-lg text-white ${bgColor}`}>
+    <Card
+      className={`p-4 rounded-xl shadow-lg text-white cursor-pointer ${bgColor} ${
+        isSelected ? "border-4 brightness-90 border-blue-500" : ""
+      }`}
+      onClick={onClickPopCard}
+    >
       <div className="flex mb-4">
         <div className="flex grow">
-          <p className="font-bold text-lg me-14 md:me-8">POP {pop_name}</p>
+          <p className="font-bold text-lg me-14 md:me-4">POP {pop_name}</p>
         </div>
         <div className="flex justify-end mb-auto">
           <DropdownMenu>
@@ -190,7 +206,7 @@ const POPCard = (props: Props) => {
                     {(field) => (
                       <Input
                         {...field}
-                        placeholder="POP Rungkut"
+                        placeholder="POP Name"
                         disabled={form.formState.isSubmitting}
                         aria-disabled={form.formState.isSubmitting}
                         value={field.value as string}
@@ -212,7 +228,7 @@ const POPCard = (props: Props) => {
                     {(field) => (
                       <Input
                         {...field}
-                        placeholder="100.100.100.1"
+                        placeholder="10.10.10.1"
                         disabled={form.formState.isSubmitting}
                         aria-disabled={form.formState.isSubmitting}
                         value={field.value as string}
@@ -234,7 +250,7 @@ const POPCard = (props: Props) => {
                     {(field) => (
                       <Input
                         {...field}
-                        placeholder="beatcom"
+                        placeholder="Username"
                         disabled={form.formState.isSubmitting}
                         aria-disabled={form.formState.isSubmitting}
                         value={field.value as string}
@@ -256,7 +272,7 @@ const POPCard = (props: Props) => {
                     {(field) => (
                       <Input
                         {...field}
-                        placeholder="beatcom"
+                        placeholder="*****"
                         disabled={form.formState.isSubmitting}
                         aria-disabled={form.formState.isSubmitting}
                         value={field.value as string}
@@ -278,7 +294,7 @@ const POPCard = (props: Props) => {
                     {(field) => (
                       <Input
                         {...field}
-                        placeholder="2323"
+                        placeholder="2345"
                         disabled={form.formState.isSubmitting}
                         aria-disabled={form.formState.isSubmitting}
                         value={field.value as string}
