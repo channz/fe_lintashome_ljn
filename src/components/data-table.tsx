@@ -27,7 +27,7 @@ const DataTable = () => {
     }, 10000);
 
     return () => clearInterval(refresh);
-  }, []);
+  }, [selectedPopId]);
 
   async function fetchData() {
     try {
