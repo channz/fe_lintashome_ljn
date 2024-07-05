@@ -98,7 +98,6 @@ const POPCard = (props: Props) => {
   async function onSubmit(data: UpdateBulkpopSchema) {
     try {
       const result = await editBulkpop(id, data);
-
       toast(result.message);
       setIsEditDialogOpen(false);
     } catch (error) {

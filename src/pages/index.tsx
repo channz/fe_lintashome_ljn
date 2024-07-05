@@ -81,7 +81,6 @@ const Homepage = () => {
   async function fetchData() {
     try {
       const result = await getBulkpop();
-
       setDatas(result.data);
     } catch (error) {
       toast((error as Error).message.toString());
@@ -91,7 +90,6 @@ const Homepage = () => {
   async function onSubmit(data: AddBulkpopSchema) {
     try {
       const result = await createBulkpop(data);
-
       toast(result.message);
       setIsAddDialogOpen(false);
     } catch (error) {
@@ -102,7 +100,6 @@ const Homepage = () => {
   async function handleDelete(bulkpopID: string) {
     try {
       const result = await deleteBulkpop(bulkpopID);
-
       toast(result.message);
       fetchData();
     } catch (error) {
