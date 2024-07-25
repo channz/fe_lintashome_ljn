@@ -20,8 +20,8 @@ const NavBar = () => {
   }
 
   return (
-    <header className="w-full border-b z-999 bg-white" aria-label="navbar">
-      <nav className="flex container py-2 z-999 bg-white">
+    <header className="w-full container bg-white border-b" aria-label="navbar">
+      <nav className="flex py-2">
         <div className="flex my-auto text-xl font-semibold text-nowrap md:text-2xl">
           Monitoring Outage
         </div>

@@ -123,9 +123,12 @@ const Homepage = () => {
         <div className="flex flex-col my-4 gap-y-4">
           <div className="flex">
             <div className="flex grow my-auto">
-              <p className="text-wrap font-semibold text-base md:text-xl">
-                Batu Monitoring
-              </p>
+              <div className="flex flex-col">
+                <h1 className="font-bold text-2xl">Monitoring Outage</h1>
+                <p className="text-wrap font-medium text-sm md:text-base">
+                  Batu Monitoring
+                </p>
+              </div>
             </div>
             <div className="flex my-auto justify-end items-end">
               <p className="text-xs md:text-sm">

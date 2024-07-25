@@ -6,12 +6,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getDetailTable } from "@/utils/apis/table/api";
+import { deleteUserList, getDetailTable } from "@/utils/apis/table/api";
 import { DetailTable } from "@/utils/apis/table/type";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "./ui/badge";
 import { useSelectedPopIdStore } from "@/utils/stores/selectedPop";
+import { Trash2 } from "lucide-react";
+import { Button } from "./ui/button";
 
 const DataTable = () => {
   const [data, setData] = useState<DetailTable[]>([]);
@@ -41,6 +43,16 @@ const DataTable = () => {
     }
   }
 
+  async function handleDelete(popID: string, userName: string) {
+    try {
+      const result = await deleteUserList(popID, userName);
+      toast(result.message);
+      fetchData();
+    } catch (error) {
+      toast((error as Error).message.toString());
+    }
+  }
+
   return (
     <Table className="min-w-full divide-y divide-gray-200 p-1">
       <TableHeader className="bg-slate-50 p-1">
@@ -52,6 +64,7 @@ const DataTable = () => {
           <TableHead className="text-center text-black p-1">Time</TableHead>
           <TableHead className="text-center text-black p-1">Downtime</TableHead>
           <TableHead className="text-center text-black p-1">Count</TableHead>
+          <TableHead className="text-center text-black p-1">Solve</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="p-1">
@@ -79,6 +92,15 @@ const DataTable = () => {
               </TableCell>
               <TableCell className="text-center text-xs p-1">
                 {datas.count}
+              </TableCell>
+              <TableCell className="text-center text-xs p-1 border w-24">
+                <Button
+                  className="shadow-md rounded-md bg-white border-2 border-red-500 group hover:bg-red-500/50"
+                  size="xs"
+                  onClick={() => handleDelete(datas.pop_id, datas.user)}
+                >
+                  <Trash2 className="w-4 h-4 text-red-500 group-hover:text-white/75" />
+                </Button>
               </TableCell>
             </TableRow>
           ))
