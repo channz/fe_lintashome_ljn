@@ -81,7 +81,7 @@ const Login = () => {
             <CardHeader className="text-center mb-0 md:mb-4">
               <img
                 className="h-10 w-auto md:h-14 md:-mt-8 xl:h-16 mx-auto"
-                src="/src/assets/logo-lintashomebyljn.png"
+                src="/logo-lintashomebyljn.png"
                 alt=""
               />
               <CardTitle className="text-dark text-base md:text-2xl font-semibold">

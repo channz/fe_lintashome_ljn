@@ -23,11 +23,7 @@ const NavBar = () => {
     <header className="w-full container bg-white border-b" aria-label="navbar">
       <nav className="flex py-2">
         <div className="flex my-auto">
-          <img
-            className="h-10 w-full"
-            src="/src/assets/logo-lintashomebyljn.png"
-            alt=""
-          />
+          <img className="h-10 w-full" src="/logo-lintashomebyljn.png" alt="" />
         </div>
         <div className="flex w-full h-full items-center justify-end">
           <DropdownMenu>
