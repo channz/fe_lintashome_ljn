@@ -12,7 +12,7 @@ function Layout(props: Props) {
   const { children, centerX, centerY } = props;
 
   return (
-    <div className="w-full h-dvh overflow-auto flex flex-col">
+    <div className="w-full h-dvh overflow-auto flex flex-col bg-slate-100">
       <nav className="sticky top-0 z-50 bg-white">
         <NavBar />
       </nav>

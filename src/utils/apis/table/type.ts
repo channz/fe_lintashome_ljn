@@ -7,4 +7,5 @@ export interface DetailTable {
   time: string;
   downtime: string;
   count: string;
+  createdAt: string;
 }

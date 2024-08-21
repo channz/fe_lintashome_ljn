@@ -22,8 +22,12 @@ const NavBar = () => {
   return (
     <header className="w-full container bg-white border-b" aria-label="navbar">
       <nav className="flex py-2">
-        <div className="flex my-auto text-xl font-semibold text-nowrap md:text-2xl">
-          Monitoring Outage
+        <div className="flex my-auto">
+          <img
+            className="h-10 w-full"
+            src="/src/assets/logo-lintashomebyljn.png"
+            alt=""
+          />
         </div>
         <div className="flex w-full h-full items-center justify-end">
           <DropdownMenu>
@@ -33,7 +37,7 @@ const NavBar = () => {
                   {user.name}
                 </p>
                 <Avatar className="w-7 h-7 my-auto">
-                  <AvatarImage src="/src/assets/user.png" />
+                  <AvatarImage src="/user.png" />
                   <AvatarFallback>OP</AvatarFallback>
                 </Avatar>
                 <div className="my-auto">

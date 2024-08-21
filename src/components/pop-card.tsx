@@ -1,5 +1,5 @@
 import { Card } from "./ui/card";
-import { Ellipsis, SquarePen, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Ellipsis, SquarePen, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -126,52 +126,63 @@ const POPCard = (props: Props) => {
 
   const bgColor =
     offlineNumber / totalNumber > 0.5
-      ? "bg-gradient-to-tl from-red-600 to-red-400"
+      ? "bg-red-500"
       : offlineNumber / totalNumber > 0.2
-      ? "bg-gradient-to-tl from-amber-600 to-amber-400"
-      : "bg-gradient-to-tl from-emerald-600 to-emerald-400";
+      ? "bg-amber-500"
+      : "bg-emerald-500";
 
   return (
     <Card
-      className={`p-4 rounded-xl shadow-lg text-white cursor-pointer ${bgColor} ${
+      className={`p-4 rounded-2xl shadow-md text-white cursor-pointer ${bgColor} ${
         isSelected ? "border-4 brightness-90 border-blue-500" : ""
       }`}
       onClick={onClickPopCard}
     >
-      <div className="flex mb-4">
-        <div className="flex grow">
-          <p className="font-bold text-lg me-14 md:me-4">POP {pop_name}</p>
-        </div>
-        <div className="flex justify-end mb-auto">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Ellipsis className="w-4 h-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" forceMount>
-              <DropdownMenuItem onClick={handleEditClick}>
-                <SquarePen className="mr-2 h-4 w-4" />
-                <span>Edit</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDeleteClick}>
-                <Trash2 className="mr-2 h-4 w-4" />
-                <span>Delete</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+      <div className="flex mb-6">
+        <div className="flex w-full">
+          <div className="flex flex-col grow">
+            <p className="font-bold text-xl">POP</p>
+            <p className="font-medium text-sm">{pop_name}</p>
+          </div>
+          <div className="shrink-0 justify-end mb-auto">
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Ellipsis className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" forceMount>
+                <DropdownMenuItem onClick={handleEditClick}>
+                  <SquarePen className="mr-2 h-4 w-4" />
+                  <span>Edit</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDeleteClick}>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
-      <div className="flex flex-col mt-auto">
-        <div className="flex">
-          <p className="text-sm grow">Total POP </p>
-          <p className="text-sm font-semibold">{total}</p>
+      <div className="flex mt-auto justify-between">
+        <div className="flex flex-col mt-auto">
+          <p className="text-4xl md:text-3xl lg:text-4xl font-bold">{total}</p>
+          <p className="text-sm md:text-xs lg:text-sm font-medium">Total POP</p>
         </div>
-        <div className="flex">
-          <p className="text-sm grow">Online </p>
-          <p className="text-sm font-semibold">{online}</p>
-        </div>
-        <div className="flex">
-          <p className="text-sm grow">Offline </p>
-          <p className="text-sm font-semibold">{offline}</p>
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            <ArrowUp className="text-green-600 bg-green-200 rounded-full p-1 h-4 w-4 my-auto" />
+            <div className="flex flex-col mt-auto">
+              <p className="text-xs font-bold">{online}</p>
+              <p className="text-[8px]">Online</p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <ArrowDown className="text-red-500 bg-red-200 rounded-full p-1 h-4 w-4 my-auto" />
+            <div className="flex flex-col mt-auto">
+              <p className="text-xs font-bold">{offline}</p>
+              <p className="text-[8px]">Offline</p>
+            </div>
+          </div>
         </div>
       </div>
 

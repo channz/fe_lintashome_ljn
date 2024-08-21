@@ -65,7 +65,8 @@ const Homepage = () => {
     }
   };
 
-  const formattedDate: string = format(currentDate, "HH:mm:ss, dd MMMM yyyy");
+  const formattedTime: string = format(currentDate, "HH:mm:ss");
+  const formattedDate: string = format(currentDate, "dd MMMM yyyy");
 
   const form = useForm<AddBulkpopSchema>({
     resolver: zodResolver(addBulkpopSchema),
@@ -124,19 +125,27 @@ const Homepage = () => {
           <div className="flex">
             <div className="flex grow my-auto">
               <div className="flex flex-col">
-                <h1 className="font-bold text-2xl">Monitoring Outage</h1>
+                <h1 className="font-bold text-xl md:text-2xl">
+                  Monitoring Outage
+                </h1>
                 <p className="text-wrap font-medium text-sm md:text-base">
                   Batu Monitoring
                 </p>
               </div>
             </div>
-            <div className="flex my-auto justify-end items-end">
-              <p className="text-xs md:text-sm">
-                {formattedDate}
-                <span className="px-1 md:px-4">|</span>
-              </p>
+            <div className="flex my-auto gap-4 items-end">
+              <div className="flex border-r-2 border-slate-500 px-4">
+                <div className="flex flex-col text-end">
+                  <p className="font-medium text-xs md:text-sm">
+                    {formattedTime}
+                  </p>
+                  <p className="font-medium text-[8px] md:text-[10px]">
+                    {formattedDate}
+                  </p>
+                </div>
+              </div>
               <CirclePlus
-                className="w-4 h-4 md:w-5 md:h-5 hover:cursor-pointer"
+                className="w-4 h-4 my-auto md:w-5 md:h-5 hover:cursor-pointer"
                 onClick={handleAddClick}
               />
             </div>
@@ -155,7 +164,9 @@ const Homepage = () => {
               />
             ))}
           </div>
-          <DataTable />
+          <div className="mb-4">
+            <DataTable />
+          </div>
         </div>
       </Layout>
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
