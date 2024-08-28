@@ -14,6 +14,7 @@ import { Badge } from "./ui/badge";
 import { useSelectedPopIdStore } from "@/utils/stores/selectedPop";
 import { ArrowDown, CircleCheck, CircleCheckBig } from "lucide-react";
 import { Button } from "./ui/button";
+import { format } from "date-fns";
 
 const DataTable = () => {
   const [data, setData] = useState<DetailTable[]>([]);
@@ -42,9 +43,6 @@ const DataTable = () => {
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
-
-      console.log("Data yang diurutkan berdasarkan createdAt:", sortedData);
-
       setData(sortedData);
     } catch (error) {
       toast((error as Error).message.toString());
@@ -115,7 +113,7 @@ const DataTable = () => {
                   </div>
                 </TableCell>
                 <TableCell className="text-center text-xs p-1 group-hover:bg-amber-300">
-                  {datas.time}
+                  {format(new Date(datas.createdAt), "HH:mm:ss, dd-MMM-yyyy")}
                 </TableCell>
                 <TableCell className="font-semibold text-center text-red-500 text-xs p-1 group-hover:bg-amber-300">
                   {datas.downtime}
